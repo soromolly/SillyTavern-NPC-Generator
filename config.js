@@ -28,4 +28,13 @@ export const DEFAULT_SETTINGS = {
     promptPosition: 'IN_PROMPT', // IN_PROMPT | IN_CHAT | BEFORE_PROMPT
 };
 
-export const AVAILABLE_TAGS = ['any', 'fantasy', 'modern', 'dark', 'romance', 'scifi'];
+// Теги: value — внутреннее значение (используется в базе и фильтре),
+// label — то, что видит пользователь в чекбоксах.
+export const AVAILABLE_TAGS = [
+    { value: 'any',     label: 'любой' },
+    { value: 'fantasy', label: 'фэнтези' },
+    { value: 'modern',  label: 'современность' },
+    { value: 'dark',    label: 'мрачное' },
+    { value: 'romance', label: 'романтика' },
+    { value: 'scifi',   label: 'фантастика' },
+];
