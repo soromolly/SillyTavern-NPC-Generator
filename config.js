@@ -25,7 +25,11 @@ export const DEFAULT_SETTINGS = {
     enabled: true,
     activeTags: ['any', 'fantasy'],
     promptDepth: 4,
-    promptPosition: 'IN_PROMPT', // IN_PROMPT | IN_CHAT | BEFORE_PROMPT
+    promptPosition: 'IN_PROMPT',
+    // Отключённые значения по категориям.
+    // Формат: { race: ['демон', 'ангел'], appearance: ['шрам через лицо'] }
+    // Пустой массив / отсутствие ключа = всё включено.
+    disabledValues: {},
 };
 
 // Теги: value — внутреннее значение (используется в базе и фильтре),
