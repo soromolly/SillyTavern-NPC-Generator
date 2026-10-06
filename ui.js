@@ -1,4 +1,5 @@
 import { getContext } from '../../../extensions.js';
+import { saveSettingsDebounced } from '../../../../script.js';
 import { MODULE_NAME, EXTENSION_NAME, AVAILABLE_TAGS } from './config.js';
 import { generateNPC, npcSummary } from './generator.js';
 import { getNpcList, addNpc, removeNpc, toggleNpc, clearNpcs } from './storage.js';
@@ -63,7 +64,17 @@ export function renderUI(settings) {
                         </button>
                     </div>
 
+                    <div class="npc-section-title">Сгенерированные NPC</div>
                     <div id="npc-gen-list" class="npc-list"></div>
+
+                    <div class="npc-section-title" style="margin-top:14px;">Характеристики</div>
+                    <div class="npc-hint">
+                        Здесь можно посмотреть, какие значения есть в базе, и отключить те,
+                        которые не должны появляться у NPC. Имена генерируются процедурно
+                        по слогам в зависимости от расы.
+                    </div>
+                    <div id="npc-gen-categories" class="npc-categories"></div>
+
                 </div>
             </div>
         </div>
@@ -73,32 +84,37 @@ export function renderUI(settings) {
 
     bindEvents();
     refreshList();
+    renderCategories();
 }
 
 function bindEvents() {
     $('#npc-gen-enabled').on('change', function () {
         currentSettings.enabled = $(this).prop('checked');
+        saveSettingsDebounced();
         syncPrompt(currentSettings);
     });
 
     $('#npc-gen-tags').on('change', '.npc-tag-cb', () => {
         currentSettings.activeTags = $('.npc-tag-cb:checked').map((_, el) => el.value).get();
         if (!currentSettings.activeTags.length) currentSettings.activeTags = ['any'];
+        saveSettingsDebounced();
     });
 
     $('#npc-gen-position').on('change', function () {
         currentSettings.promptPosition = $(this).val();
+        saveSettingsDebounced();
         syncPrompt(currentSettings);
     });
 
     $('#npc-gen-depth').on('change', function () {
         currentSettings.promptDepth = Number($(this).val()) || 0;
+        saveSettingsDebounced();
         syncPrompt(currentSettings);
     });
 
     $('#npc-gen-create').on('click', () => {
         try {
-            const npc = generateNPC(currentSettings.activeTags);
+            const npc = generateNPC(currentSettings.activeTags, currentSettings.disabledValues);
             addNpc(npc);
             refreshList();
             syncPrompt(currentSettings);
@@ -132,6 +148,58 @@ function bindEvents() {
     $('#npc-gen-list').on('click', '.npc-header', function (e) {
         if ($(e.target).is('input, button, i')) return;
         $(this).parent().toggleClass('expanded');
+    });
+
+    // Раскрытие/сворачивание категорий в разделе «Характеристики»
+    $('#npc-gen-categories').on('click', '.npc-cat-header', function (e) {
+        if ($(e.target).is('button, i')) return;
+        $(this).parent().toggleClass('expanded');
+    });
+
+    // Чекбокс отдельного значения
+    $('#npc-gen-categories').on('change', '.npc-entry-cb', function () {
+        const cat = $(this).data('cat');
+        const value = $(this).data('value');
+        const checked = $(this).prop('checked');
+
+        if (!currentSettings.disabledValues) currentSettings.disabledValues = {};
+        if (!currentSettings.disabledValues[cat]) currentSettings.disabledValues[cat] = [];
+
+        const arr = currentSettings.disabledValues[cat];
+        if (checked) {
+            const idx = arr.indexOf(value);
+            if (idx >= 0) arr.splice(idx, 1);
+        } else {
+            if (!arr.includes(value)) arr.push(value);
+        }
+
+        if (arr.length === 0) delete currentSettings.disabledValues[cat];
+
+        saveSettingsDebounced();
+        updateCatCounter(cat);
+    });
+
+    // Кнопка «все / ничего» для категории
+    $('#npc-gen-categories').on('click', '.npc-cat-toggle-all', function (e) {
+        e.stopPropagation();
+        const $cat = $(this).closest('.npc-cat');
+        const cat = $cat.data('cat');
+        const allChecked = $cat.find('.npc-entry-cb:checked').length === $cat.find('.npc-entry-cb').length;
+        const turnOn = !allChecked;
+
+        $cat.find('.npc-entry-cb').each(function () {
+            $(this).prop('checked', turnOn);
+        });
+
+        if (!currentSettings.disabledValues) currentSettings.disabledValues = {};
+        if (turnOn) {
+            delete currentSettings.disabledValues[cat];
+        } else {
+            currentSettings.disabledValues[cat] = $cat.find('.npc-entry-cb').map((_, el) => $(el).data('value')).get();
+        }
+
+        saveSettingsDebounced();
+        updateCatCounter(cat);
     });
 }
 
@@ -168,10 +236,6 @@ export function refreshUI() {
     refreshList();
 }
 
-/**
- * Показывает характеристики NPC, используя русские названия категорий
- * из базы (cat.label), а не сырые ключи (race, age, ...).
- */
 function renderTraits(npc) {
     const db = getDatabase();
     const rows = Object.entries(npc.traits).map(([key, val]) => {
@@ -183,10 +247,78 @@ function renderTraits(npc) {
     return rows.join('');
 }
 
+/**
+ * Раздел «Характеристики»: список категорий, внутри — все значения из базы
+ * с чекбоксами. Отключённые не будут использоваться при генерации.
+ */
+function renderCategories() {
+    const db = getDatabase();
+    const $container = $('#npc-gen-categories');
+    $container.empty();
+
+    if (!db || !db.categories) {
+        $container.append('<div class="npc-empty">База не загружена.</div>');
+        return;
+    }
+
+    for (const [catKey, cat] of Object.entries(db.categories)) {
+        const entries = cat.entries ?? [];
+        const disabled = currentSettings.disabledValues?.[catKey] ?? [];
+
+        const items = entries.map(entry => {
+            const value = typeof entry === 'string' ? entry : entry.value;
+            const isOn = !disabled.includes(value);
+            return `
+                <label class="checkbox_label npc-entry-label">
+                    <input type="checkbox" class="npc-entry-cb"
+                        data-cat="${escapeHtml(catKey)}"
+                        data-value="${escapeHtml(value)}"
+                        ${isOn ? 'checked' : ''}>
+                    <span>${escapeHtml(value)}</span>
+                </label>
+            `;
+        }).join('');
+
+        const catHtml = `
+            <div class="npc-cat" data-cat="${escapeHtml(catKey)}">
+                <div class="npc-cat-header">
+                    <i class="fa-solid fa-chevron-right npc-cat-arrow"></i>
+                    <b>${escapeHtml(cat.label ?? catKey)}</b>
+                    <span class="npc-cat-count"></span>
+                    <button class="menu_button npc-cat-toggle-all" title="Включить/отключить все">⇄</button>
+                </div>
+                <div class="npc-cat-body">
+                    <div class="npc-cat-items">${items}</div>
+                </div>
+            </div>
+        `;
+
+        $container.append(catHtml);
+    }
+
+    // Проставляем счётчики после вставки в DOM
+    $('.npc-cat').each(function () {
+        updateCatCounter($(this).data('cat'));
+    });
+}
+
+function updateCatCounter(catKey) {
+    const $cat = $(`.npc-cat[data-cat="${cssEscape(catKey)}"]`);
+    const total = $cat.find('.npc-entry-cb').length;
+    const on = $cat.find('.npc-entry-cb:checked').length;
+    $cat.find('.npc-cat-count').text(`${on}/${total}`);
+    $cat.toggleClass('npc-cat-empty', on === 0);
+}
+
 function escapeHtml(str) {
     return String(str)
         .replaceAll('&', '&amp;')
         .replaceAll('<', '&lt;')
         .replaceAll('>', '&gt;')
         .replaceAll('"', '&quot;');
+}
+
+function cssEscape(str) {
+    // Минимально достаточно для наших ключей, но на всякий случай
+    return String(str).replace(/["\\]/g, '\\$&');
 }
