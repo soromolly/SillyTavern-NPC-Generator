@@ -46,10 +46,15 @@ function isAllowed(entry, selected, activeTags) {
 }
 
 /**
- * Выбирает несколько элементов из одной категории.
- * Важно: элементы, выбранные в этой же итерации, добавляются во временный
- * selected, чтобы excludes работал и МЕЖДУ ними (потёртая одежда vs дорогой наряд).
+ * Оставляет только те значения, которые не отключены пользователем
+ * в разделе «Характеристики».
  */
+function filterDisabled(entries, catKey, disabledValues) {
+    const disabled = disabledValues?.[catKey];
+    if (!disabled || !disabled.length) return entries;
+    return entries.filter(e => !disabled.includes(entryValue(e)));
+}
+
 function pickMultiple(pool, count, selected, activeTags) {
     const picked = [];
     const working = [...pool];
@@ -61,16 +66,13 @@ function pickMultiple(pool, count, selected, activeTags) {
         const chosen = weightedRandom(available);
         picked.push(chosen);
         working.splice(working.indexOf(chosen), 1);
-
-        // Кладём выбранное в tempSelected под уникальным ключом,
-        // чтобы следующие итерации учитывали его в excludes.
         tempSelected[`__picked_${i}`] = entryValue(chosen);
     }
 
     return picked;
 }
 
-export function generateNPC(activeTags) {
+export function generateNPC(activeTags, disabledValues = {}) {
     const db = getDatabase();
     if (!db) throw new Error('База NPC не загружена');
 
@@ -85,7 +87,8 @@ export function generateNPC(activeTags) {
     const selected = {};
 
     for (const [catKey, cat] of Object.entries(db.categories)) {
-        const entries = cat.entries ?? [];
+        const allEntries = cat.entries ?? [];
+        const entries = filterDisabled(allEntries, catKey, disabledValues);
         if (!entries.length) continue;
 
         if (cat.type === 'single') {
