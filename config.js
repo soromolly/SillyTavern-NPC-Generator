@@ -6,14 +6,19 @@ export const STORAGE_KEY = 'npc_generator_list';
 // База лежит в корне расширения, рядом с этим файлом
 export const DB_PATH = './npc_database.json';
 
-// Значения ролей для setExtensionPrompt.
-// Не импортируем из extensions.js, потому что не во всех версиях ST
-// эта константа экспортируется — определяем локально.
-// SYSTEM = 0, USER = 1, ASSISTANT = 2 (совпадает со внутренними значениями ST).
+// Значения для setExtensionPrompt.
+// Не импортируем из extensions.js — не во всех версиях ST эти константы
+// экспортируются. Значения совпадают со внутренними значениями ST.
 export const EXTENSION_PROMPT_ROLES = {
     SYSTEM: 0,
     USER: 1,
     ASSISTANT: 2,
+};
+
+export const EXTENSION_PROMPT_TYPES = {
+    IN_PROMPT: 0,       // В основной промпт (по умолчанию)
+    IN_CHAT: 1,         // В глубину чата
+    BEFORE_PROMPT: 2,   // Перед промптом
 };
 
 export const DEFAULT_SETTINGS = {
