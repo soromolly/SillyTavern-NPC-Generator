@@ -1,0 +1,81 @@
+.npc-generator-settings .npc-list {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-top: 10px;
+}
+
+.npc-generator-settings .npc-card {
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 6px;
+    margin-bottom: 6px;
+    background: var(--black30a);
+    overflow: hidden;
+    transition: border-color 0.2s;
+}
+
+.npc-generator-settings .npc-card.enabled {
+    border-color: var(--SmartThemeQuoteColor, #6a8caf);
+}
+
+.npc-generator-settings .npc-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.npc-generator-settings .npc-header:hover {
+    background: var(--white10a);
+}
+
+.npc-generator-settings .npc-name {
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.npc-generator-settings .npc-summary {
+    font-size: 0.85em;
+    opacity: 0.7;
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.npc-generator-settings .npc-remove {
+    padding: 2px 6px;
+    opacity: 0.6;
+}
+
+.npc-generator-settings .npc-remove:hover {
+    opacity: 1;
+}
+
+.npc-generator-settings .npc-details {
+    display: none;
+    padding: 8px 12px;
+    border-top: 1px solid var(--SmartThemeBorderColor);
+    font-size: 0.9em;
+}
+
+.npc-generator-settings .npc-card.expanded .npc-details {
+    display: block;
+}
+
+.npc-generator-settings .npc-trait {
+    margin-bottom: 4px;
+    line-height: 1.4;
+}
+
+.npc-generator-settings .npc-trait b {
+    text-transform: capitalize;
+}
+
+.npc-generator-settings .npc-empty {
+    text-align: center;
+    opacity: 0.6;
+    padding: 12px;
+    font-style: italic;
+}
