@@ -1,9 +1,8 @@
 import {
     getContext,
     extension_prompt_types,
-    extension_prompt_roles,
 } from '../../../extensions.js';
-import { PROMPT_KEY } from './config.js';
+import { PROMPT_KEY, EXTENSION_PROMPT_ROLES } from './config.js';
 import { getNpcList } from './storage.js';
 import { npcToPromptText } from './generator.js';
 
@@ -34,6 +33,6 @@ export function syncPrompt(settings) {
         position,
         depth,
         false,
-        extension_prompt_roles.SYSTEM,
+        EXTENSION_PROMPT_ROLES.SYSTEM,
     );
 }
