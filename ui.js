@@ -2,12 +2,21 @@ import { getContext } from '../../../extensions.js';
 import { MODULE_NAME, EXTENSION_NAME, AVAILABLE_TAGS } from './config.js';
 import { generateNPC, npcSummary } from './generator.js';
 import { getNpcList, addNpc, removeNpc, toggleNpc, clearNpcs } from './storage.js';
+import { getDatabase } from './loader.js';
 import { syncPrompt } from './prompt.js';
 
 let currentSettings = null;
 
 export function renderUI(settings) {
     currentSettings = settings;
+
+    const tagCheckboxes = AVAILABLE_TAGS.map(tag => `
+        <label class="checkbox_label" style="margin:0;">
+            <input type="checkbox" class="npc-tag-cb" value="${tag.value}"
+                ${settings.activeTags.includes(tag.value) ? 'checked' : ''}>
+            <span>${tag.label}</span>
+        </label>
+    `).join('');
 
     const html = `
         <div class="npc-generator-settings">
@@ -27,13 +36,7 @@ export function renderUI(settings) {
                         <span>Теги сеттинга:</span>
                     </label>
                     <div id="npc-gen-tags" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px;">
-                        ${AVAILABLE_TAGS.map(tag => `
-                            <label class="checkbox_label" style="margin:0;">
-                                <input type="checkbox" class="npc-tag-cb" value="${tag}"
-                                    ${settings.activeTags.includes(tag) ? 'checked' : ''}>
-                                <span>${tag}</span>
-                            </label>
-                        `).join('')}
+                        ${tagCheckboxes}
                     </div>
 
                     <label class="checkbox_label">
@@ -165,10 +168,16 @@ export function refreshUI() {
     refreshList();
 }
 
+/**
+ * Показывает характеристики NPC, используя русские названия категорий
+ * из базы (cat.label), а не сырые ключи (race, age, ...).
+ */
 function renderTraits(npc) {
+    const db = getDatabase();
     const rows = Object.entries(npc.traits).map(([key, val]) => {
         const text = Array.isArray(val) ? val.join(', ') : val;
-        const label = key.replace(/_/g, ' ');
+        const cat = db?.categories?.[key];
+        const label = cat?.label ?? key.replace(/_/g, ' ');
         return `<div class="npc-trait"><b>${escapeHtml(label)}:</b> ${escapeHtml(text)}</div>`;
     });
     return rows.join('');
