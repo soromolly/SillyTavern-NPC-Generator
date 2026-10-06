@@ -1,0 +1,158 @@
+{
+  "meta": {
+    "version": "0.1.0",
+    "author": "soromolly",
+    "description": "База черт для генератора NPC"
+  },
+  "categories": {
+    "race": {
+      "label": "Раса",
+      "type": "single",
+      "entries": [
+        { "value": "человек",    "tags": ["fantasy", "modern"], "weight": 3 },
+        { "value": "эльф",       "tags": ["fantasy"],           "weight": 1 },
+        { "value": "полуэльф",   "tags": ["fantasy"],           "weight": 1 },
+        { "value": "дварф",      "tags": ["fantasy"],           "weight": 1 },
+        { "value": "полурослик", "tags": ["fantasy"],           "weight": 1 },
+        { "value": "орк",        "tags": ["fantasy"],           "weight": 1 },
+        { "value": "зверолюд",   "tags": ["fantasy"],           "weight": 1 },
+        { "value": "демон",      "tags": ["fantasy", "dark"],   "weight": 0.3 },
+        { "value": "ангел",      "tags": ["fantasy", "dark"],   "weight": 0.3 }
+      ]
+    },
+    "age": {
+      "label": "Возраст",
+      "type": "single",
+      "entries": [
+        { "value": "юный (16-20)",    "tags": ["any"], "weight": 1 },
+        { "value": "молодой (21-30)", "tags": ["any"], "weight": 3 },
+        { "value": "зрелый (31-45)",  "tags": ["any"], "weight": 3 },
+        { "value": "старший (46-60)", "tags": ["any"], "weight": 2 },
+        { "value": "пожилой (61-80)", "tags": ["any"], "weight": 1 }
+      ]
+    },
+    "appearance": {
+      "label": "Внешность",
+      "type": "multi",
+      "count": 3,
+      "entries": [
+        { "value": "шрам через лицо",      "tags": ["any"],     "weight": 1 },
+        { "value": "татуировки на руках",  "tags": ["any"],     "weight": 1 },
+        { "value": "седые волосы",         "tags": ["any"],     "weight": 1, "requires": { "age": ["старший (46-60)", "пожилой (61-80)"] } },
+        { "value": "длинные волосы",       "tags": ["any"],     "weight": 2 },
+        { "value": "короткая стрижка",     "tags": ["any"],     "weight": 2 },
+        { "value": "янтарные глаза",       "tags": ["fantasy"], "weight": 1 },
+        { "value": "хриплый голос",        "tags": ["any"],     "weight": 1 },
+        { "value": "высокий рост",         "tags": ["any"],     "weight": 2 },
+        { "value": "щуплое телосложение",  "tags": ["any"],     "weight": 2 },
+        { "value": "крепкое телосложение", "tags": ["any"],     "weight": 2 },
+        { "value": "потёртая одежда",      "tags": ["any"],     "weight": 2 },
+        { "value": "дорогой наряд",        "tags": ["any"],     "weight": 1 }
+      ]
+    },
+    "personality_main": {
+      "label": "Основная черта характера",
+      "type": "single",
+      "entries": [
+        { "value": "добродушный",   "tags": ["any"], "weight": 2 },
+        { "value": "циничный",      "tags": ["any"], "weight": 2 },
+        { "value": "меланхоличный", "tags": ["any"], "weight": 1 },
+        { "value": "фанатичный",    "tags": ["any"], "weight": 1 },
+        { "value": "хитрый",        "tags": ["any"], "weight": 2 },
+        { "value": "честный",       "tags": ["any"], "weight": 2 },
+        { "value": "вспыльчивый",   "tags": ["any"], "weight": 1 },
+        { "value": "спокойный",     "tags": ["any"], "weight": 2 },
+        { "value": "загадочный",    "tags": ["any"], "weight": 1 }
+      ]
+    },
+    "personality_secondary": {
+      "label": "Второстепенные черты",
+      "type": "multi",
+      "count": 2,
+      "entries": [
+        { "value": "саркастичный",   "tags": ["any"], "weight": 2 },
+        { "value": "заботливый",     "tags": ["any"], "weight": 2 },
+        { "value": "импульсивный",   "tags": ["any"], "weight": 2 },
+        { "value": "подозрительный", "tags": ["any"], "weight": 2 },
+        { "value": "любопытный",     "tags": ["any"], "weight": 2 },
+        { "value": "трусливый",      "tags": ["any"], "weight": 1 },
+        { "value": "смелый",         "tags": ["any"], "weight": 2, "excludes": ["трусливый"] },
+        { "value": "высокомерный",   "tags": ["any"], "weight": 1 },
+        { "value": "скромный",       "tags": ["any"], "weight": 2, "excludes": ["высокомерный"] },
+        { "value": "молчаливый",     "tags": ["any"], "weight": 2 },
+        { "value": "болтливый",      "tags": ["any"], "weight": 1, "excludes": ["молчаливый"] }
+      ]
+    },
+    "occupation": {
+      "label": "Профессия",
+      "type": "single",
+      "entries": [
+        { "value": "наёмник",    "tags": ["fantasy"], "weight": 2 },
+        { "value": "торговец",   "tags": ["any"],     "weight": 2 },
+        { "value": "трактирщик", "tags": ["fantasy", "modern"], "weight": 2 },
+        { "value": "травник",    "tags": ["fantasy"], "weight": 1 },
+        { "value": "кузнец",     "tags": ["fantasy"], "weight": 1 },
+        { "value": "вор",        "tags": ["any"],     "weight": 2 },
+        { "value": "стражник",   "tags": ["fantasy", "modern"], "weight": 2 },
+        { "value": "жрец",       "tags": ["fantasy"], "weight": 1 },
+        { "value": "бард",       "tags": ["fantasy"], "weight": 1 },
+        { "value": "учёный",     "tags": ["any"],     "weight": 1 },
+        { "value": "бродяга",    "tags": ["any"],     "weight": 1 }
+      ]
+    },
+    "goal": {
+      "label": "Цель",
+      "type": "single",
+      "entries": [
+        { "value": "найти пропавшего родственника", "tags": ["any"],     "weight": 2 },
+        { "value": "заработать на новый дом",       "tags": ["any"],     "weight": 2 },
+        { "value": "отомстить обидчику",            "tags": ["any"],     "weight": 2 },
+        { "value": "раскрыть древнюю тайну",        "tags": ["fantasy"], "weight": 1 },
+        { "value": "выжить любой ценой",            "tags": ["any"],     "weight": 2 },
+        { "value": "вернуть утраченную честь",      "tags": ["any"],     "weight": 1 },
+        { "value": "найти лекарство от болезни",    "tags": ["any"],     "weight": 1 },
+        { "value": "скрыться от прошлого",          "tags": ["any"],     "weight": 2 }
+      ]
+    },
+    "secret": {
+      "label": "Секрет",
+      "type": "single",
+      "entries": [
+        { "value": "на самом деле служит врагу",  "tags": ["any"],            "weight": 1 },
+        { "value": "скрывает свою истинную расу", "tags": ["fantasy"],        "weight": 1 },
+        { "value": "виновен в смерти близкого",   "tags": ["any"],            "weight": 1 },
+        { "value": "влюблён в персонажа игрока",  "tags": ["any", "romance"], "weight": 1 },
+        { "value": "потерял память о прошлом",    "tags": ["any"],            "weight": 1 },
+        { "value": "носит проклятый предмет",     "tags": ["fantasy"],        "weight": 1 },
+        { "value": "предал старого друга",        "tags": ["any"],            "weight": 1 }
+      ]
+    },
+    "quirk": {
+      "label": "Причуда",
+      "type": "multi",
+      "count": 1,
+      "entries": [
+        { "value": "постоянно что-то грызёт",       "tags": ["any"], "weight": 1 },
+        { "value": "коллекционирует странные вещи", "tags": ["any"], "weight": 1 },
+        { "value": "говорит с самим собой",         "tags": ["any"], "weight": 1 },
+        { "value": "боится темноты",                "tags": ["any"], "weight": 1 },
+        { "value": "никогда не снимает перчатку",   "tags": ["any"], "weight": 1 },
+        { "value": "любит поговорки",               "tags": ["any"], "weight": 1 },
+        { "value": "постукивает пальцами по столу", "tags": ["any"], "weight": 1 }
+      ]
+    },
+    "weakness": {
+      "label": "Слабость",
+      "type": "single",
+      "entries": [
+        { "value": "панически боится магии",   "tags": ["fantasy"], "weight": 1 },
+        { "value": "страдает от боли в спине", "tags": ["any"],     "weight": 2 },
+        { "value": "не умеет читать",          "tags": ["any"],     "weight": 1 },
+        { "value": "зависим от алкоголя",      "tags": ["any", "dark"], "weight": 1 },
+        { "value": "легко поддаётся гневу",    "tags": ["any"],     "weight": 2 },
+        { "value": "не доверяет никому",       "tags": ["any"],     "weight": 1 },
+        { "value": "физически слаб",           "tags": ["any"],     "weight": 1 }
+      ]
+    }
+  }
+}
