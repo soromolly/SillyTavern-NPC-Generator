@@ -1,6 +1,6 @@
 {
   "meta": {
-    "version": "0.1.0",
+    "version": "0.1.1",
     "author": "soromolly",
     "description": "База черт для генератора NPC"
   },
@@ -39,15 +39,15 @@
         { "value": "шрам через лицо",      "tags": ["any"],     "weight": 1 },
         { "value": "татуировки на руках",  "tags": ["any"],     "weight": 1 },
         { "value": "седые волосы",         "tags": ["any"],     "weight": 1, "requires": { "age": ["старший (46-60)", "пожилой (61-80)"] } },
-        { "value": "длинные волосы",       "tags": ["any"],     "weight": 2 },
-        { "value": "короткая стрижка",     "tags": ["any"],     "weight": 2 },
+        { "value": "длинные волосы",       "tags": ["any"],     "weight": 2, "excludes": ["короткая стрижка"] },
+        { "value": "короткая стрижка",     "tags": ["any"],     "weight": 2, "excludes": ["длинные волосы"] },
         { "value": "янтарные глаза",       "tags": ["fantasy"], "weight": 1 },
         { "value": "хриплый голос",        "tags": ["any"],     "weight": 1 },
         { "value": "высокий рост",         "tags": ["any"],     "weight": 2 },
-        { "value": "щуплое телосложение",  "tags": ["any"],     "weight": 2 },
-        { "value": "крепкое телосложение", "tags": ["any"],     "weight": 2 },
-        { "value": "потёртая одежда",      "tags": ["any"],     "weight": 2 },
-        { "value": "дорогой наряд",        "tags": ["any"],     "weight": 1 }
+        { "value": "щуплое телосложение",  "tags": ["any"],     "weight": 2, "excludes": ["крепкое телосложение"] },
+        { "value": "крепкое телосложение", "tags": ["any"],     "weight": 2, "excludes": ["щуплое телосложение"] },
+        { "value": "потёртая одежда",      "tags": ["any"],     "weight": 2, "excludes": ["дорогой наряд"] },
+        { "value": "дорогой наряд",        "tags": ["any"],     "weight": 1, "excludes": ["потёртая одежда"] }
       ]
     },
     "personality_main": {
@@ -72,14 +72,14 @@
       "entries": [
         { "value": "саркастичный",   "tags": ["any"], "weight": 2 },
         { "value": "заботливый",     "tags": ["any"], "weight": 2 },
-        { "value": "импульсивный",   "tags": ["any"], "weight": 2 },
+        { "value": "импульсивный",   "tags": ["any"], "weight": 2, "excludes": ["спокойный"] },
         { "value": "подозрительный", "tags": ["any"], "weight": 2 },
         { "value": "любопытный",     "tags": ["any"], "weight": 2 },
         { "value": "трусливый",      "tags": ["any"], "weight": 1 },
         { "value": "смелый",         "tags": ["any"], "weight": 2, "excludes": ["трусливый"] },
         { "value": "высокомерный",   "tags": ["any"], "weight": 1 },
         { "value": "скромный",       "tags": ["any"], "weight": 2, "excludes": ["высокомерный"] },
-        { "value": "молчаливый",     "tags": ["any"], "weight": 2 },
+        { "value": "молчаливый",     "tags": ["any"], "weight": 2, "excludes": ["болтливый"] },
         { "value": "болтливый",      "tags": ["any"], "weight": 1, "excludes": ["молчаливый"] }
       ]
     },
@@ -118,13 +118,13 @@
       "label": "Секрет",
       "type": "single",
       "entries": [
-        { "value": "на самом деле служит врагу",  "tags": ["any"],            "weight": 1 },
-        { "value": "скрывает свою истинную расу", "tags": ["fantasy"],        "weight": 1 },
-        { "value": "виновен в смерти близкого",   "tags": ["any"],            "weight": 1 },
-        { "value": "влюблён в персонажа игрока",  "tags": ["any", "romance"], "weight": 1 },
-        { "value": "потерял память о прошлом",    "tags": ["any"],            "weight": 1 },
-        { "value": "носит проклятый предмет",     "tags": ["fantasy"],        "weight": 1 },
-        { "value": "предал старого друга",        "tags": ["any"],            "weight": 1 }
+        { "value": "на самом деле служит врагу",       "tags": ["any"],            "weight": 1 },
+        { "value": "выдаёт себя за того, кем не является", "tags": ["any"],       "weight": 1 },
+        { "value": "виновен в смерти близкого",        "tags": ["any"],            "weight": 1 },
+        { "value": "влюблён в персонажа игрока",       "tags": ["any", "romance"], "weight": 1 },
+        { "value": "потерял память о прошлом",         "tags": ["any"],            "weight": 1 },
+        { "value": "носит проклятый предмет",          "tags": ["fantasy"],        "weight": 1 },
+        { "value": "предал старого друга",             "tags": ["any"],            "weight": 1 }
       ]
     },
     "quirk": {
