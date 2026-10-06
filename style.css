@@ -1,7 +1,24 @@
+.npc-generator-settings .npc-section-title {
+    font-weight: bold;
+    margin: 8px 0 4px;
+    opacity: 0.9;
+    border-bottom: 1px solid var(--SmartThemeBorderColor);
+    padding-bottom: 4px;
+}
+
+.npc-generator-settings .npc-hint {
+    font-size: 0.85em;
+    opacity: 0.75;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+/* === Список сгенерированных NPC === */
+
 .npc-generator-settings .npc-list {
     max-height: 400px;
     overflow-y: auto;
-    margin-top: 10px;
+    margin-top: 6px;
 }
 
 .npc-generator-settings .npc-card {
@@ -69,13 +86,97 @@
     line-height: 1.4;
 }
 
-.npc-generator-settings .npc-trait b {
-    text-transform: capitalize;
-}
-
 .npc-generator-settings .npc-empty {
     text-align: center;
     opacity: 0.6;
     padding: 12px;
     font-style: italic;
+}
+
+/* === Раздел «Характеристики» === */
+
+.npc-generator-settings .npc-categories {
+    max-height: 500px;
+    overflow-y: auto;
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 6px;
+    padding: 4px;
+    background: var(--black30a);
+}
+
+.npc-generator-settings .npc-cat {
+    border-bottom: 1px solid var(--SmartThemeBorderColor);
+}
+
+.npc-generator-settings .npc-cat:last-child {
+    border-bottom: none;
+}
+
+.npc-generator-settings .npc-cat-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.npc-generator-settings .npc-cat-header:hover {
+    background: var(--white10a);
+}
+
+.npc-generator-settings .npc-cat-arrow {
+    transition: transform 0.2s;
+    font-size: 0.8em;
+    opacity: 0.7;
+    width: 12px;
+}
+
+.npc-generator-settings .npc-cat.expanded .npc-cat-arrow {
+    transform: rotate(90deg);
+}
+
+.npc-generator-settings .npc-cat-header b {
+    flex-grow: 1;
+}
+
+.npc-generator-settings .npc-cat-count {
+    font-size: 0.85em;
+    opacity: 0.7;
+    font-variant-numeric: tabular-nums;
+}
+
+.npc-generator-settings .npc-cat-empty .npc-cat-count {
+    color: #d97a7a;
+    opacity: 1;
+}
+
+.npc-generator-settings .npc-cat-toggle-all {
+    padding: 1px 6px;
+    font-size: 0.85em;
+    opacity: 0.6;
+}
+
+.npc-generator-settings .npc-cat-toggle-all:hover {
+    opacity: 1;
+}
+
+.npc-generator-settings .npc-cat-body {
+    display: none;
+    padding: 4px 8px 8px 28px;
+}
+
+.npc-generator-settings .npc-cat.expanded .npc-cat-body {
+    display: block;
+}
+
+.npc-generator-settings .npc-cat-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+}
+
+.npc-generator-settings .npc-entry-label {
+    margin: 0;
+    font-size: 0.9em;
 }
