@@ -1,15 +1,16 @@
+import { getContext } from '../../../extensions.js';
 import {
-    getContext,
-    extension_prompt_types,
-} from '../../../extensions.js';
-import { PROMPT_KEY, EXTENSION_PROMPT_ROLES } from './config.js';
+    PROMPT_KEY,
+    EXTENSION_PROMPT_ROLES,
+    EXTENSION_PROMPT_TYPES,
+} from './config.js';
 import { getNpcList } from './storage.js';
 import { npcToPromptText } from './generator.js';
 
 const POSITION_MAP = {
-    IN_PROMPT: extension_prompt_types.IN_PROMPT,
-    IN_CHAT: extension_prompt_types.IN_CHAT,
-    BEFORE_PROMPT: extension_prompt_types.BEFORE_PROMPT,
+    IN_PROMPT: EXTENSION_PROMPT_TYPES.IN_PROMPT,
+    IN_CHAT: EXTENSION_PROMPT_TYPES.IN_CHAT,
+    BEFORE_PROMPT: EXTENSION_PROMPT_TYPES.BEFORE_PROMPT,
 };
 
 export function syncPrompt(settings) {
@@ -22,8 +23,8 @@ export function syncPrompt(settings) {
         text = enabled.map(npcToPromptText).join('\n\n');
     }
 
-    const position = POSITION_MAP[settings.promptPosition] ?? extension_prompt_types.IN_PROMPT;
-    const depth = position === extension_prompt_types.IN_CHAT
+    const position = POSITION_MAP[settings.promptPosition] ?? EXTENSION_PROMPT_TYPES.IN_PROMPT;
+    const depth = position === EXTENSION_PROMPT_TYPES.IN_CHAT
         ? (settings.promptDepth ?? 4)
         : 4;
 
