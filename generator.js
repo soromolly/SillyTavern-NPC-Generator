@@ -45,16 +45,28 @@ function isAllowed(entry, selected, activeTags) {
     return true;
 }
 
+/**
+ * Выбирает несколько элементов из одной категории.
+ * Важно: элементы, выбранные в этой же итерации, добавляются во временный
+ * selected, чтобы excludes работал и МЕЖДУ ними (потёртая одежда vs дорогой наряд).
+ */
 function pickMultiple(pool, count, selected, activeTags) {
     const picked = [];
     const working = [...pool];
+    const tempSelected = { ...selected };
+
     for (let i = 0; i < count && working.length > 0; i++) {
-        const available = working.filter(e => isAllowed(e, selected, activeTags));
+        const available = working.filter(e => isAllowed(e, tempSelected, activeTags));
         if (!available.length) break;
         const chosen = weightedRandom(available);
         picked.push(chosen);
         working.splice(working.indexOf(chosen), 1);
+
+        // Кладём выбранное в tempSelected под уникальным ключом,
+        // чтобы следующие итерации учитывали его в excludes.
+        tempSelected[`__picked_${i}`] = entryValue(chosen);
     }
+
     return picked;
 }
 
