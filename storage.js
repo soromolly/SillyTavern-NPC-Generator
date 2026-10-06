@@ -1,57 +1,94 @@
 import { getContext } from '../../../extensions.js';
 import { STORAGE_KEY } from './config.js';
 
-function ensureMetadata() {
+/**
+ * Получить контейнер метаданных текущего чата.
+ * В разных версиях ST поле называется либо chatMetadata (camelCase),
+ * либо chat_metadata (snake_case). Пробуем оба.
+ */
+function getMetadataContainer() {
     const ctx = getContext();
-    if (!ctx.chat_metadata) ctx.chat_metadata = {};
-    return ctx.chat_metadata;
+    if (ctx.chatMetadata && typeof ctx.chatMetadata === 'object') {
+        return ctx.chatMetadata;
+    }
+    if (ctx.chat_metadata && typeof ctx.chat_metadata === 'object') {
+        return ctx.chat_metadata;
+    }
+    // На самый крайний случай — создаём своё поле на ctx,
+    // чтобы хоть что-то работало в рамках сессии.
+    ctx.chatMetadata = {};
+    return ctx.chatMetadata;
+}
+
+/**
+ * Попросить ST сохранить метаданные на диск.
+ * Если функции нет — ничего страшного, ST сохранит при следующем действии.
+ */
+function requestSave() {
+    const ctx = getContext();
+    const candidates = ['saveMetadata', 'saveMetadataDebounced'];
+    for (const name of candidates) {
+        if (typeof ctx[name] === 'function') {
+            try {
+                ctx[name]();
+                return;
+            } catch (e) {
+                console.warn('[NPC Generator] Не удалось вызвать', name, e);
+            }
+        }
+    }
 }
 
 export function getNpcList() {
-    const md = ensureMetadata();
+    const md = getMetadataContainer();
     return Array.isArray(md[STORAGE_KEY]) ? md[STORAGE_KEY] : [];
 }
 
 export function saveNpcList(list) {
-    const ctx = getContext();
-    const md = ensureMetadata();
+    const md = getMetadataContainer();
     md[STORAGE_KEY] = list;
-    if (typeof ctx.saveMetadata === 'function') {
-        ctx.saveMetadata();
-    }
+    requestSave();
 }
 
 export function addNpc(npc) {
-    const list = getNpcList();
-    list.push(npc);
-    saveNpcList(list);
-    return list;
+    const md = getMetadataContainer();
+    if (!Array.isArray(md[STORAGE_KEY])) md[STORAGE_KEY] = [];
+    md[STORAGE_KEY].push(npc);
+    requestSave();
+    return md[STORAGE_KEY];
 }
 
 export function removeNpc(id) {
-    const list = getNpcList().filter(n => n.id !== id);
-    saveNpcList(list);
-    return list;
+    const md = getMetadataContainer();
+    const list = Array.isArray(md[STORAGE_KEY]) ? md[STORAGE_KEY] : [];
+    md[STORAGE_KEY] = list.filter(n => n.id !== id);
+    requestSave();
+    return md[STORAGE_KEY];
 }
 
 export function toggleNpc(id, enabled) {
-    const list = getNpcList();
+    const md = getMetadataContainer();
+    const list = Array.isArray(md[STORAGE_KEY]) ? md[STORAGE_KEY] : [];
     const npc = list.find(n => n.id === id);
     if (npc) npc.enabled = enabled;
-    saveNpcList(list);
+    requestSave();
     return list;
 }
 
 export function updateNpc(id, patch) {
-    const list = getNpcList();
+    const md = getMetadataContainer();
+    const list = Array.isArray(md[STORAGE_KEY]) ? md[STORAGE_KEY] : [];
     const idx = list.findIndex(n => n.id === id);
     if (idx >= 0) {
         list[idx] = { ...list[idx], ...patch };
-        saveNpcList(list);
+        requestSave();
     }
     return list;
 }
 
 export function clearNpcs() {
-    saveNpcList([]);
+    const md = getMetadataContainer();
+    md[STORAGE_KEY] = [];
+    requestSave();
+    return [];
 }
